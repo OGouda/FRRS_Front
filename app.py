@@ -285,4 +285,4 @@ def VideFeed():
 if __name__ == '__main__':
     #global name
     #APP.debug=True
-    APP.run(host= '0.0.0.0', ssl_context='adhoc', port=4000, debug=True)
+    APP.run(host= '0.0.0.0', ssl_context='adhoc', port=80, debug=True)
