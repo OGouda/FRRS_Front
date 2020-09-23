@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register a face</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->  
+  <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}"> 
+<!--===============================================================================================-->
+  <link rel="stylesheet"  href="{{ url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">  
+<!--===============================================================================================-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/animate/animate.css') }}">  
+<!--===============================================================================================-->  
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/css-hamburgers/hamburgers.min.css') }}">  
+<!--===============================================================================================-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/select2/select2.min.css') }}">  
+<!--===============================================================================================-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}"> 
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> 
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/clock.css') }}"> 
+<!--==============================================================================================-->
+</head>
+
+<style>
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+</style>
+<body >
+  <!--onload="hideImage()"-->
+  <div class="limiter">
+    <div class="container-login100">
+      <div class="wrap-login100" style="padding-top:inherit; ">
+          <section style="width: 100%;">
+              <div class="login100-pic js-tilt" data-tilt style=" height: 90px; width: 80px; margin-left: 46%;">
+                  <a href="{{ url_for('home') }}" style="float: right;">
+                    <img src="static/images/unnamed.png" alt="IMG" style="width: 80px; float: right;" >
+                  </a>          
+                </div>
+          </section>
+        
+        <aside  style="float:left;">
+          <h2>Look At The Camera</h2>
+          <br>
+          <br>
+          <video  style="border:1px solid;" width="320" height="240" id="video" autoplay></video> 
+          <br>          
+          <button class="login100-form-btn" onclick="wait()" id="start" style="float:left;">
+            Start
+          </button>
+        </aside>
+        <br>
+        <div id="app"></div>
+        <section style=" float: right;" id="main">          
+            <div >
+              
+              <h2 style="text-align: center">SignIn</h2><br>
+              <!--<div class="loader" id="imgToHide" style="float:left;"></div>-->
+                <canvas name='canvas' id='canvas' width='320' height='240' style="float:left; border:1px solid #d3d3d3; display: none">               
+                  <video  width="320" height="240" id="video" autoplay></video>
+                </canvas>     
+            </div>                  
+     
+            <br>
+
+            <div id="badge">
+              <div  class="card" style="border:1px solid black; float:left; height: 300px;" >
+                <p style="float:left; bottom:-150px; text-align: center; position: relative;" >
+                  <input  style="text-align: center; " type="text" id="name" value="">
+                </p>
+              </div>
+            </div>
+
+            <br>
+            <br>
+
+            <div style="float:left; width: 100% ">
+              <br>
+              <button class="login100-form-btn" onclick="printBadge()" id="print"  style="display: none;">
+                print
+              </button>
+            </div>
+        </section>           
+      </div>
+    </div>
+  </div>
+  
+
+<!--===============================================================================================-->  
+  <script src="static/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+  <script src="static/vendor/bootstrap/js/popper.js"></script>
+  <script src="static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+  <script src="static/vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+  <script src="static/vendor/tilt/tilt.jquery.min.js"></script>
+  <script >
+    $('.js-tilt').tilt({
+      scale: 1.1
+    })
+  </script>
+<!--===============================================================================================-->
+  <script src="static/js/main.js"></script>
+	<script src="static/js/clock.js"></script>
+  <script src="https://rawgit.com/allensarkisyan/VideoFrame/master/VideoFrame.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+   
+
+
+
+
+
+
+  <script type="text/javascript">
+     
+      var localMediaStream = null;      
+      var video = document.querySelector('video');
+      var canvas = document.querySelector('canvas');
+      var areWedone = true;
+
+      /*function doHide(){
+      document.getElementById( "imgToHide" ).style.display = "none" ;
+      }
+
+      function hideImage(){
+      //  5000 = 5 seconds
+      setTimeout( "doHide()", 2000 ) ;
+      }*/
+
+      function wait(){
+
+        navigator.getUserMedia({ video: true }, function (stream) {
+           
+           'video.src = window.URL.createObjectURL(stream);'
+           localMediaStream = stream;
+           video.srcObject = stream;
+           video.play();
+           
+           
+       }, function (e) {
+           console.log(e);
+       });
+
+        setTimeout( "extractFrames()", 5000 ) ;
+        // Code to be executed immediately goes here
+        startTimer();
+
+      }
+
+      function extractFrames() {
+
+        /**navigator.getUserMedia({ video: true }, function (stream) {
+           
+           'video.src = window.URL.createObjectURL(stream);'
+           localMediaStream = stream;
+           video.srcObject = stream;
+           video.play();
+           
+           
+       }, function (e) {
+           console.log(e);
+       });**/
+        var ctx = canvas.getContext('2d');
+        var array = []; 
+        var array2 = [];        
+
+        
+        
+        function drawFrame(e) {
+
+          ctx.drawImage(this, 0, 0, 320, 240);
+
+          function drawOneFrame(){                        
+
+            canvas.toBlob(saveFrame, 'image/jpeg');
+            //array2.push(canvas.toDataURL());
+            console.log("Im drawing One Frame. time: ");
+          }
+
+          if (array.length < 5){
+            var timer = setTimeout(drawOneFrame(), 1500);
+          }          
+   
+          if (array.length == 5){
+            clearInterval(timer);
+            video.pause();
+            localMediaStream.getVideoTracks()[0].stop();
+            localMediaStream.getTracks().forEach(track => track.stop())
+            console.log("pause....We got more than 5 frames :)");
+            URL.revokeObjectURL(this.src);
+        }        
+        }
+      
+        function saveFrame(blob) {
+          array.push(blob);
+        }
+        
+        function doneWithFrames(){
+          
+          console.log("we have collected enough frames");
+          
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function(e) {
+                if (this.readyState === 4) {
+                    console.log("Server returned: ", e.target.responseText);
+                    document.getElementById("name").value =e.target.responseText;
+                }
+            };
+            var fd = new FormData();                  
+            filename="userPhoto"
+            
+            for (var i = 0; i < array.length; i++) {
+              blob = array[i]            
+              console.log(blob)
+              xhr.open("POST", "checkImages", true);
+              fd.append("upImage"+i, blob, filename+i);              
+              xhr.send(fd);
+          }
+          /*//xhr.setRequestHeader("Content-type", "multipart/form-data");
+          for (var i = 0; i < array2.length; i++) {
+              //blob = array[i]            
+              //console.log(array2[i])              
+              //xhr.open("POST", "checkImages", true);
+              xhr.open("POST",'https://192.168.10.9:5000/signIn', true);
+              xhr.setRequestHeader("Content-Type", "application/json");
+              //fd2.append("upImage"+i, blob, filename+i);
+              //fd2.append("img64b",array2[i]);
+              var data = JSON.stringify({ "img64b": array2[i]}); 
+              console.log(data);
+              //xhr.setRequestHeader("Content-type", "multipart/form-data");
+              xhr.send(data);
+          }*/
+
+          console.log( "heeeeuploadeeeey");
+
+          var bt = document.getElementById("start");
+          bt.style.display="none";
+          var bt2 = document.getElementById("print");
+          bt2.style.display="block";
+          
+        }
+
+        function revokeURL(e) {
+          URL.revokeObjectURL(this.src);
+        }
+         
+        //function onend(e) {
+          //if (areWedone){
+            //var img;   
+          // do whatever with the frames
+          /*for (var i = 0; i < array.length; i++) {
+            img = new Image();
+            img.onload = revokeURL;
+            img.src = URL.createObjectURL(array[i]);
+            document.body.appendChild(img);*/
+         // }
+          // we don't need the video's objectURL anymore
+          //.then(response => response.text())  
+          //.then(text => {console.log(text);})        
+          //URL.revokeObjectURL(this.src);
+          //areWedone = false;   
+         // var urlCreator = window.URL || window.webkitURL;
+          //var imageUrl = urlCreator.createObjectURL(this.response);
+         // document.querySelector("#image").src = imageUrl;
+       // }
+
+        video.muted = true;
+        video.addEventListener('timeupdate', drawFrame, false);
+        //video.addEventListener('pause', onend, false);        
+        video.addEventListener('pause', doneWithFrames, false);
+        
+      }
+
+      
+
+      function printBadge(){             
+             
+        var divValue = document.getElementById("name").value; 
+        var a = window.open('', '', 'height=500, width=500'); 
+        a.document.write('<html>'); 
+        a.document.write('<body > <h1>Badge<br>');
+        a.document.write('<div style="border:1px solid black; float:left; height: 250px; width: 200px;">');  
+        a.document.write('<div style="margin:50px;">'+divValue+'</div>');      
+        a.document.write('</div>');
+        a.document.write('</body></html>'); 
+        a.document.close(); 
+        a.print();         
+      }
+      
+      function takePhoto() {
+          if (localMediaStream) {
+              
+              var ctx = canvas.getContext('2d');
+              ctx.drawImage(video, 0, 0, 320, 240);
+              console.log("helllo");
+          }
+      }
+
+      function sendPhoto() {
+        console.log( "heeeeeeeeeeeeeeeey");
+        console.log( canvas.toDataURL('image/png'));
+        document.getElementById('my_hidden').value = canvas.toDataURL('image/png');
+        document.forms["form1"].submit();
+      }      
+
+      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+      window.URL = window.URL || window.webkitURL;
+
+      function startCapture() {
+          navigator.getUserMedia({ video: true }, function (stream) {
+           
+              'video.src = window.URL.createObjectURL(stream);'
+              localMediaStream = stream;
+              video.srcObject = stream;
+              video.play();
+              
+              
+          }, function (e) {
+              console.log(e);
+          });
+      }
+
+      function stopCapture() {
+        
+        video.pause();
+        localMediaStream.getVideoTracks()[0].stop();
+          
+      }
+  </script>
+
+</body>
+</html>

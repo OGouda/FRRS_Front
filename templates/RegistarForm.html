@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register a face</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->  
+  <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}"> 
+<!--===============================================================================================-->
+  <link rel="stylesheet"  href="{{ url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">  
+<!--===============================================================================================-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/animate/animate.css') }}">  
+<!--===============================================================================================-->  
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/css-hamburgers/hamburgers.min.css') }}">  
+<!--===============================================================================================-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/select2/select2.min.css') }}">  
+<!--===============================================================================================-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}"> 
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> 
+<!--==============================================================================================-->
+</head>
+
+
+<body>
+
+
+
+  <div class="limiter">
+    <div class="container-login100">
+      <div class="wrap-login100">
+        <div style="width: inherit;">
+        <div style="float:right; width:fit-content;"class="login100-pic js-tilt" data-tilt>
+          <a href="{{ url_for('home') }}">
+            <img style="width:150px;"src="static/images/unnamed.png" alt="IMG">
+          </a>  
+          </div>      
+         
+        </div> 
+
+<!--
+        <ul class="nav nav-tabs">
+          <li class="nav-item "><a class="nav-link active" href="">Home</a></li>
+          <li class="nav-item "><a class="nav-link " href="#upload">Upload</a></li>
+        </ul> -->
+
+<section id="upload">
+        <span class="login100-form-title">
+           Register by uploading a picture!
+        </span>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class=flashes>
+          {% for message in messages %}
+            <li style="color:red;">{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+
+        <div style="float:left;  margin:10px ;" >
+          <form action="/Registar" method="post"  id= "form2" enctype ="multipart/form-data">
+            <input type ="file" name ="file1"/>
+            <input type ="text" name ="humanName"/>
+            <div style="float:left;  margin:10px ;">
+            </div>
+            <input type ="text" name ="humanName2" class="input100" placeholder="Full Name" style="float: left; margin-bottom:10px;" />
+            <button class="login100-form-btn" style="float: right; width:230px; height: 30px;" >
+              Upload New Face
+            </button>
+          </form>
+
+
+
+        </div> 
+         </section>      
+      </div>
+    </div>
+  </div>
+  
+
+<!--===============================================================================================-->  
+  <script src="static/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+  <script src="static/vendor/bootstrap/js/popper.js"></script>
+  <script src="static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+  <script src="static/vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+  <script src="static/vendor/tilt/tilt.jquery.min.js"></script>
+  <script >
+    $('.js-tilt').tilt({
+      scale: 1.1
+    })
+  </script>
+<!--===============================================================================================-->
+  <script src="static/js/main.js"></script>
+	
+  <script src="https://rawgit.com/allensarkisyan/VideoFrame/master/VideoFrame.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+   
+
+
+  <script type="text/javascript">
+
+     
+      var localMediaStream = null;      
+      var video = document.querySelector('video');
+      var canvas = document.querySelector('canvas');
+      var areWedone = true;
+      
+      
+      function extractFrames() {
+
+        var ctx = canvas.getContext('2d');
+        var array = [];
+        
+
+        /*function collectingImg(){
+
+          var timer = setInterval(drawFrame(e), 200);
+
+
+          if(array.length == 5){
+
+            console.log("We got 5 frames :)");
+
+            }
+            else if (array.length > 4){
+            clearInterval(timer);
+            video.pause();
+            localMediaStream.getVideoTracks()[0].stop();
+            localMediaStream.getTracks().forEach(track => track.stop())
+            
+            }
+
+          }*/
+
+        
+        function drawFrame(e) {
+
+          ctx.drawImage(this, 0, 0, 320, 240);
+
+          function drawOneFrame(){
+            
+            //var startTime = Date.now();            
+
+            canvas.toBlob(saveFrame, 'image/jpeg');
+
+              /*var interval = setInterval(function() {
+              var elapsedTime = Date.now() - startTime;
+              var sec = (elapsedTime / 1000).toFixed(3);}, 100);*/
+
+            console.log("Im drawing One Frame. time: ");
+
+          }
+         //ctx.drawImage(this, 0, 0);
+         //this.pause();
+
+          //canvas.toBlob(saveFrame, 'image/jpeg');
+          //if (this.currentTime < this.duration) {
+          //  this.play();
+            //console.log("inside the smaller than check");
+
+          //}   
+
+          //console.log("what am i doing!");
+          if (array.length < 5){
+            var timer = setTimeout(drawOneFrame(), 1000);
+          }
+          
+
+          if(array.length == 5){
+
+            console.log("We got 5 frames :)");
+            
+          }
+           if (array.length >= 5){
+
+            clearInterval(timer);
+            video.pause();
+            localMediaStream.getVideoTracks()[0].stop();
+            localMediaStream.getTracks().forEach(track => track.stop())
+            console.log("pause");
+          }     
+          
+        }
+      
+        function saveFrame(blob) {
+          array.push(blob);
+        }
+
+
+        /*
+        function doneWithFrames(){
+          
+          console.log("we have collected enough frames");
+          for (var i = 0; i < array.length; i++) {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function(e) {
+                if (this.readyState === 4) {
+                    console.log("Server returned: ", e.target.responseText);
+                }
+            };
+            var fd = new FormData();
+            //change form name to send all at once
+            filename="userPhoto"
+            
+            blob = array[i]
+            
+            console.log(blob)
+            xhr.open("POST", "checkImages", true);
+            fd.append("upImage", blob, filename+i);
+            //xhr.setRequestHeader("Content-type", "multipart/form-data");
+            xhr.send(fd);
+          }
+          console.log( "heeeeuploadeeeey");
+        }
+        */
+
+
+        function revokeURL(e) {
+          URL.revokeObjectURL(this.src);
+        }
+         
+        function onend(e) {
+
+          if (areWedone){
+            var img;   
+          // do whatever with the frames
+          /*for (var i = 0; i < array.length; i++) {
+            img = new Image();
+            img.onload = revokeURL;
+            img.src = URL.createObjectURL(array[i]);
+            document.body.appendChild(img);*/
+          }
+          // we don't need the video's objectURL anymore
+          URL.revokeObjectURL(this.src);
+
+          areWedone = false;
+
+          }
+
+         // var urlCreator = window.URL || window.webkitURL;
+          //var imageUrl = urlCreator.createObjectURL(this.response);
+         // document.querySelector("#image").src = imageUrl;        
+
+        video.muted = true;
+        video.addEventListener('timeupdate', drawFrame, false);
+        video.addEventListener('pause', onend, false);
+        video.addEventListener('pause', doneWithFrames, false);
+
+      }
+
+    
+      function takePhoto() {
+          if (localMediaStream) {
+              
+              var ctx = canvas.getContext('2d');
+              ctx.drawImage(video, 0, 0, 320, 240);
+              console.log("helllo");
+          }
+      }
+
+      function sendPhoto() {
+        console.log( "heeeeeeeeeeeeeeeey");
+        console.log( canvas.toDataURL('image/png'));
+        document.getElementById('my_hidden').value = canvas.toDataURL('image/png');
+        document.forms["form1"].submit();
+      }
+
+      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+      window.URL = window.URL || window.webkitURL;
+
+      function startCapture() {
+          navigator.getUserMedia({ video: true }, function (stream) {
+           
+              'video.src = window.URL.createObjectURL(stream);'
+              localMediaStream = stream;
+              video.srcObject = stream;
+              video.play();
+              
+              
+          }, function (e) {
+              console.log(e);
+          });
+      }
+
+      function stopCapture() {
+        
+        video.pause();
+        localMediaStream.getVideoTracks()[0].stop();
+          
+      }
+  </script>
+
+</body>
+</html>

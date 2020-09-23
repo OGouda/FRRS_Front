@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.iconify.design/1/1.0.3/iconify.min.js"></script>
+  <title> Welcome to our protal </title>
+    <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+    <link rel="stylesheet" type="text/css"  href="{{ url_for('static', filename='css/home.css') }}"> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}"> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> 
+</head>
+
+<body>
+
+  <div class="limiter">
+    <div class="container-login100">
+      <div class="pricingdiv">
+        <div onclick="location.href='/signIn';" style="float:left;  margin:10px;  cursor: pointer;  list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top-left-radius: 50px; border-bottom-right-radius: 50px; color: white; background: #2a2cc8; position: relative; width: 250px; height: 300px; /* width of each table */  margin-bottom: 1em;transition: all .5s; text-align: center; margin-right: 100px; " >
+          <ul class="theplan">
+            <li class="title" style="margin-top: 110px;"><span class="iconify" data-icon="simple-line-icons:camrecorder" data-inline="false" style="color: yellow;margin-right: 10px;"></span> <b> Check Video Feed</b></li>
+          </ul>
+        </div>
+
+        <div onclick="location.href='/Registar';"style="float:left;  margin:10px; cursor: pointer;  list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top-left-radius: 50px; border-bottom-right-radius: 50px; color: white; background: #e53499; position: relative; width: 250px; height: 300px; /* width of each table */  margin-bottom: 1em;transition: all .5s; text-align: center;" >
+          <ul class="theplan">
+            <li class="title" style="margin-top: 110px;"><span class="iconify" data-icon="simple-line-icons:user-following" data-inline="false" style="color: yellow; margin-right: 10px;"></span><b>Register a new face</b></li>
+          </ul>
+        </div>  
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
