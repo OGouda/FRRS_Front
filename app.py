@@ -23,6 +23,8 @@ API = os.environ['API']
 _pool = None
 Allowed_extension = {'png', 'jpeg'}
 APP.config['Upload_Image_folder'] = "./uploaded_Image"
+NO_FRAMES_TO_BE_SENT= 3
+
 
 @APP.route('/')
 def home():
@@ -53,7 +55,7 @@ def RegistarLive():
             image_Base64_format = file[starter+1:]
             image_Base64_format = bytes(image_Base64_format, encoding="ascii")
             image_viewableFormat = Image.open(BytesIO(base64.b64decode(image_Base64_format)))
-
+            
             #use the perosn name from the from, in saving the image in the local storage - for testign purposes.
             personName = request.form['humanName']
             NewPath    = os.path.join(APP.config['Upload_Image_folder'], personName+'.png')
@@ -79,14 +81,14 @@ def RegistarLive():
             image_Base64_format=''
             with open(NewPath, "rb") as img_file:
                 image_Base64_format = base64.b64encode(img_file.read())
-                os.remove(NewPath)
+                #os.remove(NewPath)
 
             data = {'name':personName,'email':email, 'gender':gender, 'img64b':image_Base64_format, 'api':API}
 
         
         error_message = ''
         call_response = requests.post(url= API_registration_Link , data=data)
-    
+
         if call_response.status_code == 200:
             resText = json.loads(call_response.text)
             print("The process of added new user is successfull")
@@ -125,10 +127,8 @@ def Register():
 
 
         if 'fileImg' in request.form:
-            print('The user has taken a live image for registration instead of uploaded an old image.')
-
             file  = request.form['fileImg']
-            print(f'The file recived has the following type: [{type(file)}]')
+            print(f'The user has taken a live image for registration instead of uploaded an old image. The file recived has the following type: [{type(file)}]')
             #extract image data from the received POST request. 
             starter = file.find(',')
             image_Base64_format = file[starter+1:]
@@ -144,23 +144,24 @@ def Register():
 
 
         elif 'file1' in request.files:  
-            print('The user have uploaded an image instead of taking a live picture')
+           
 
             #extract image data from the received the request and save it.  
             personName   = request.form['humanName2']
             fileReceived = request.files['file1']
             filename     = secure_filename(fileReceived.filename)
             extension = filename.split(".")[1]
-            print(filename)
+            print('The user have uploaded an image instead of taking a live picture. Saved in '+ filename)
 
             #use the perosn name from the from, in saving the image in the local storage - for testign purposes.
             NewPath= os.path.join(APP.config['Upload_Image_folder'], personName+"."+extension)
             fileReceived.save(NewPath)
+            print("saved in ", NewPath)
 
             image_Base64_format=''
             with open(NewPath, "rb") as img_file:
                 image_Base64_format = base64.b64encode(img_file.read())
-                os.remove(NewPath)
+                #os.remove(NewPath)
 
             data = {'name':personName,'email':email, 'gender':gender, 'img64b':image_Base64_format, 'api':API}
 
@@ -200,11 +201,10 @@ def checkImages():
         face_names = [] 
         processes_list =[]
         Frames_path= []
-        Number_of_frames= 5
         extension       = '.jpg'
 
-        pool = Pool(processes=Number_of_frames)
-        for i in range(Number_of_frames):
+        pool = Pool(processes=NO_FRAMES_TO_BE_SENT)
+        for i in range(NO_FRAMES_TO_BE_SENT):
             field_Name = 'upImage'+str(i) # example 'upImage0'
             #file_name = request.files[field_Name].filename
             print('Frame - [{}]'.format(field_Name))
@@ -220,10 +220,8 @@ def checkImages():
 
         face_names = []
         for i in processes_list:
-
-            print('results')
             Arr = i.get(timeout=2)
-            print(Arr)
+            print('Results: ', Arr)
             if Arr is not None and Arr != []:
                 face_names.append(Arr[1])
 
@@ -250,11 +248,17 @@ def checkPersonAPI(NewPath, API):
 
     print('length of the image for check ...', len(my_string))
     data = {'img64b':my_string, 'api':API}
-    #print(data)
 
     error_message = ''
     Name_person = 'Unknown'
     call_response = requests.post(url=signIn, data=data)
+    print('call_response')
+    print(call_response)
+    print(dir(call_response))
+    print(call_response.url)
+    print(dir(call_response.request))
+    print(call_response.text)
+
 
     if call_response.status_code == 200:  # MATCH FOUND
         resText = json.loads(call_response.text)
@@ -285,4 +289,4 @@ def VideFeed():
 if __name__ == '__main__':
     #global name
     #APP.debug=True
-    APP.run(host= '0.0.0.0', ssl_context='adhoc', port=80, debug=True)
+    APP.run(host= '0.0.0.0', ssl_context='adhoc', port=4000, debug=True)
