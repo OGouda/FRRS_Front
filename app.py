@@ -252,13 +252,6 @@ def checkPersonAPI(NewPath, API):
     error_message = ''
     Name_person = 'Unknown'
     call_response = requests.post(url=signIn, data=data)
-    print('call_response')
-    print(call_response)
-    print(dir(call_response))
-    print(call_response.url)
-    print(dir(call_response.request))
-    print(call_response.text)
-
 
     if call_response.status_code == 200:  # MATCH FOUND
         resText = json.loads(call_response.text)
