@@ -263,11 +263,13 @@ def checkPersonAPI(NewPath, API):
         resText = json.loads(call_response.text)
         print("No match found for this frame !!!!!!!")
         error_message ="MATCH_NOT_FOUND"
+        Name_person = 'Unknown'
 
     else: #call_response.status_code == 400:
         resText = json.loads(call_response.text)
         error_message = resText['message']
         print(f"Error[400]: [{error_message}]") 
+        Name_person = error_message
                     
     flash(error_message)
 
