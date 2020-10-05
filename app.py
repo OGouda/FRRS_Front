@@ -23,7 +23,7 @@ API = os.environ['API']
 _pool = None
 Allowed_extension = {'png', 'jpeg'}
 APP.config['Upload_Image_folder'] = "./uploaded_Image"
-NO_FRAMES_TO_BE_SENT= 3
+NO_FRAMES_TO_BE_SENT= 5
 
 
 @APP.route('/')
