@@ -88,7 +88,7 @@ def RegistarLive():
         
         error_message = ''
         call_response = requests.post(url= API_registration_Link , data=data)
-
+        print(call_response)
         if call_response.status_code == 200:
             resText = json.loads(call_response.text)
             print("The process of added new user is successfull")
